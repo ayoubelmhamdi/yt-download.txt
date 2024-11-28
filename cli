@@ -1,0 +1,24 @@
+#!/bin/bash
+
+quality=720
+text_urls_file="download.txt"
+output="rm3_videos/"
+
+output="$(dirname $(realpath $0))/$output/"
+format="best[height<=${quality}]/bestvideo[height<=${quality}]+audio/best"
+
+mkdir -p "$output"
+
+readarray -t urls < "$text_urls_file"
+
+[ -f count.txt -a -n $(cat count.txt) ] && i=$(cat count.txt) || i=0
+
+for url in "${urls[@]}"; do
+    # TODO: trim whatsapp prefix
+    if yt-dlp -f "$format" "$url" --merge-output-format mp4 -o "$output/${i}_%(title)s.%(ext)s" ; then
+        set -x
+        sed "/${url//\//\\/}/d" -i "$text_urls_file"
+        i=$(( i + 1 ))
+        echo $i > count.txt
+    fi
+done

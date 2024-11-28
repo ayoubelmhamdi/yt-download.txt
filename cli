@@ -11,7 +11,9 @@ mkdir -p "$output"
 
 readarray -t urls < "$text_urls_file"
 
-[ -f count.txt -a -n $(cat count.txt) ] && i=$(cat count.txt) || i=0
+i=0
+[ -f count.txt -a -n $(cat count.txt) ] && i=$(cat count.txt)
+
 
 for url in "${urls[@]}"; do
     # TODO: trim whatsapp prefix
